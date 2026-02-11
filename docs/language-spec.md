@@ -24,9 +24,9 @@ EZScript supports the following primitive types:
 Example:
 
 ```ez
-var x = 10
-var name = "fin"
-var active = true
+x = 10
+name = "fin"
+active = true
 ```
 
 ## 4. Variables
@@ -36,13 +36,13 @@ Variables are declared using the var keyword.
 Syntax:
 
 ```ez
-var <identifier> = <expression>
+<identifier> = <expression>
 ```
 
 Example:
 
 ```ez
-var score = 42
+score = 42
 ```
 
 ## 5. Expressions
@@ -62,7 +62,7 @@ Comparison operators:
 Example:
 
 ```ez
-var result = 5 + 3 * 2
+result = 5 + 3 * 2
 ```
 
 ## 6. Built-in Functions (v0.1)
@@ -85,7 +85,7 @@ Single-line comments use the # symbol.
 
 ```ez
 # This is a comment
-var x = 5
+x = 5
 ```
 
 ## 8. Execution Model (Planned)
