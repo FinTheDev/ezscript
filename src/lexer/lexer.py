@@ -160,19 +160,3 @@ class Lexer:
             raise Exception(f"Unexpected character: {self.current}")
 
         return Token(TokenType.EOF, None)
-
-if __name__ == "__main__":
-    code = """
-            x = 5 + 3
-            print("hi")
-            # comment
-           """
-
-    lexer = Lexer(code)
-
-    token = lexer.get_next_token()
-    while token.type != TokenType.EOF:
-        print(token)
-        token = lexer.get_next_token()
-
-    print(token)
