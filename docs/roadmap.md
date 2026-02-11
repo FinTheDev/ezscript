@@ -8,9 +8,9 @@
 
 ## Phase 1 – Core Interpreter
 
-- [ ] Implement lexer
-- [ ] Implement parser
-- [ ] Build AST system
+- [x] Implement lexer
+- [x] Implement parser
+- [x] Build AST system
 - [ ] Implement basic expression evaluation
 - [ ] Add print() support
 
