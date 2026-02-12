@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from src.main import run_file
+
+if len(sys.argv) != 2:
+    print("Usage: ez <file.ez>")
+    sys.exit(1)
+
+run_file(sys.argv[1])
