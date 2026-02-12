@@ -8,11 +8,11 @@
 
 ## Phase 1 – Core Interpreter
 
-- [ ] Implement lexer
-- [ ] Implement parser
-- [ ] Build AST system
-- [ ] Implement basic expression evaluation
-- [ ] Add print() support
+- [x] Implement lexer
+- [x] Implement parser
+- [x] Build AST system
+- [x] Implement basic expression evaluation
+- [x] Add print() support
 
 Goal: Execute simple scripts with variables and arithmetic.
 
