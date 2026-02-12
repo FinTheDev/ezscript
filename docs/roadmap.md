@@ -11,7 +11,7 @@
 - [x] Implement lexer
 - [x] Implement parser
 - [x] Build AST system
-- [ ] Implement basic expression evaluation
+- [x] Implement basic expression evaluation
 - [ ] Add print() support
 
 Goal: Execute simple scripts with variables and arithmetic.
