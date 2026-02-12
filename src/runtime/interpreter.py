@@ -35,6 +35,18 @@ class Interpreter:
             return left * right
         if node.op.type.name == "SLASH":
             return left / right
+        if node.op.type.name == "GT":
+            return left > right
+        if node.op.type.name == "LT":
+            return left < right
+        if node.op.type.name == "GTE":
+            return left >= right
+        if node.op.type.name == "LTE":
+            return left <= right
+        if node.op.type.name == "EQEQ":
+            return left == right
+        if node.op.type.name == "NEQ":
+            return left != right
 
     def visit_Assignment(self, node):
         value = self.visit(node.value)
@@ -49,3 +61,19 @@ class Interpreter:
             return None
 
         raise Exception(f"Unknown function {node.name}")
+
+    def visit_Block(self, node):
+        result = None
+        for stmt in node.statements:
+            result = self.visit(stmt)
+        return result
+
+    def visit_If(self, node):
+        for condition, block in node.branches:
+            if self.visit(condition):
+                return self.visit(block)
+
+        if node.else_block:
+            return self.visit(node.else_block)
+
+        return None
