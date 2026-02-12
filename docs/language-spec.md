@@ -31,8 +31,6 @@ active = true
 
 ## 4. Variables
 
-Variables are declared using the var keyword.
-
 Syntax:
 
 ```ez

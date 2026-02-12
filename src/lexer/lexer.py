@@ -11,6 +11,9 @@ class TokenType(Enum):
     STAR       = auto()
     SLASH      = auto()
     EQUAL      = auto()
+    IF         = auto()
+    ELSE       = auto()
+    DO         = auto()
     EQEQ       = auto()
     NEQ        = auto()
     LT         = auto()
@@ -19,6 +22,9 @@ class TokenType(Enum):
     GTE        = auto()
     LPAREN     = auto()
     RPAREN     = auto()
+    NEWLINE    = auto()
+    INDENT     = auto()
+    DEDENT     = auto()
     EOF        = auto()
 
 class Token:
@@ -31,9 +37,21 @@ class Token:
 
 class Lexer:
     def __init__(self, text):
-        self.text = text
+        self.text = text.replace("\t", "    ")
         self.pos = 0
-        self.current = text[0] if text else None
+        self.current = self.text[0] if self.text else None
+
+        self.indent_stack = [0]
+        self.at_line_start = True
+        self.pending_dedents = 0
+
+        self.KEYWORDS = {
+            "true": TokenType.TRUE,
+            "false": TokenType.FALSE,
+            "if": TokenType.IF,
+            "else": TokenType.ELSE,
+            "do": TokenType.DO,
+        }
 
     def advance(self):
         self.pos += 1
@@ -47,10 +65,6 @@ class Lexer:
         if nxt >= len(self.text):
             return None
         return self.text[nxt]
-
-    def skip_whitespace(self):
-        while self.current and self.current.isspace():
-            self.advance()
 
     def skip_comment(self):
         while self.current and self.current != "\n":
@@ -77,17 +91,74 @@ class Lexer:
         while self.current and (self.current.isalnum() or self.current == "_"):
             result += self.current
             self.advance()
-        if result == "true":
-            return Token(TokenType.TRUE, True)
-        if result == "false":
-            return Token(TokenType.FALSE, False)
-        return Token(TokenType.IDENTIFIER, result)
+
+        token_type = self.KEYWORDS.get(result, TokenType.IDENTIFIER)
+
+        if token_type == TokenType.TRUE:
+            return Token(token_type, True)
+        if token_type == TokenType.FALSE:
+            return Token(token_type, False)
+
+        return Token(token_type, result)
+
+    def handle_indentation(self):
+        count = 0
+
+        while self.current == " ":
+            count += 1
+            self.advance()
+
+        if self.current == "\n" or self.current is None:
+            return None
+
+        if count % 4 != 0:
+            raise Exception("Indentation must be multiple of 4 spaces")
+
+        current_indent = self.indent_stack[-1]
+
+        if count > current_indent:
+            self.indent_stack.append(count)
+            return Token(TokenType.INDENT, count)
+
+        if count < current_indent:
+            while self.indent_stack and count < self.indent_stack[-1]:
+                self.indent_stack.pop()
+                self.pending_dedents += 1
+
+            if count != self.indent_stack[-1]:
+                raise Exception("Invalid indentation level")
+
+            return None
+
+        return None
 
     def get_next_token(self):
-        while self.current:
+        while True:
 
-            if self.current.isspace():
-                self.skip_whitespace()
+            if self.pending_dedents > 0:
+                self.pending_dedents -= 1
+                return Token(TokenType.DEDENT, None)
+
+            if self.current is None:
+                if len(self.indent_stack) > 1:
+                    self.indent_stack.pop()
+                    return Token(TokenType.DEDENT, None)
+                return Token(TokenType.EOF, None)
+
+            if self.current == "\n":
+                self.advance()
+                self.at_line_start = True
+                return Token(TokenType.NEWLINE, "\n")
+
+            if self.at_line_start:
+                self.at_line_start = False
+                indent_token = self.handle_indentation()
+                if indent_token:
+                    return indent_token
+                continue
+
+            if self.current == " ":
+                self.advance()
                 continue
 
             if self.current == "#":
@@ -158,5 +229,3 @@ class Lexer:
                 return Token(TokenType.RPAREN, ")")
 
             raise Exception(f"Unexpected character: {self.current}")
-
-        return Token(TokenType.EOF, None)
