@@ -40,3 +40,12 @@ class Interpreter:
         value = self.visit(node.value)
         self.env[node.name] = value
         return value
+
+    def visit_Call(self, node):
+        value = self.visit(node.argument)
+
+        if node.name == "print":
+            print(value)
+            return None
+
+        raise Exception(f"Unknown function {node.name}")

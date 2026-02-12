@@ -32,8 +32,16 @@ class Parser:
             return Bool(False)
 
         if token.type == TokenType.IDENTIFIER:
+            name = token.value
             self.eat(TokenType.IDENTIFIER)
-            return Identifier(token.value)
+
+            if self.current.type == TokenType.LPAREN:
+                self.eat(TokenType.LPAREN)
+                argument = self.expr()
+                self.eat(TokenType.RPAREN)
+                return Call(name, argument)
+
+            return Identifier(name)
 
         if token.type == TokenType.LPAREN:
             self.eat(TokenType.LPAREN)

@@ -42,3 +42,11 @@ class Assignment:
 
     def __repr__(self):
         return f"Assignment({self.name}, {self.value})"
+
+class Call:
+    def __init__(self, name, argument):
+        self.name = name
+        self.argument = argument
+
+    def __repr__(self):
+        return f"Call({self.name}, {self.argument})"

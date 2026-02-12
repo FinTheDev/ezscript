@@ -12,7 +12,7 @@
 - [x] Implement parser
 - [x] Build AST system
 - [x] Implement basic expression evaluation
-- [ ] Add print() support
+- [x] Add print() support
 
 Goal: Execute simple scripts with variables and arithmetic.
 
