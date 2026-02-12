@@ -64,7 +64,7 @@ class Parser:
 
         return node
 
-    def expr(self):
+    def arithmetic(self):
         node = self.term()
 
         while self.current.type in (TokenType.PLUS, TokenType.MINUS):
@@ -77,6 +77,80 @@ class Parser:
 
         return node
 
+    def comparison(self):
+        node = self.arithmetic()
+
+        while self.current.type in (
+            TokenType.EQEQ,
+            TokenType.NEQ,
+            TokenType.LT,
+            TokenType.GT,
+            TokenType.LTE,
+            TokenType.GTE,
+        ):
+            op = self.current
+            self.eat(op.type)
+            node = BinaryOp(node, op, self.arithmetic())
+
+        return node
+
+    def expr(self):
+        return self.comparison()
+
+    def block(self):
+        self.eat(TokenType.NEWLINE)
+        self.eat(TokenType.INDENT)
+
+        statements = []
+
+        while self.current.type != TokenType.DEDENT:
+            if self.current.type == TokenType.NEWLINE:
+                self.eat(TokenType.NEWLINE)
+                continue
+
+            statements.append(self.statement())
+
+        self.eat(TokenType.DEDENT)
+
+        return Block(statements)
+
+    def if_statement(self):
+        branches = []
+
+        self.eat(TokenType.IF)
+        condition = self.expr()
+        self.eat(TokenType.DO)
+
+        block_node = self.block()
+        branches.append((condition, block_node))
+
+        while self.current.type == TokenType.ELSE:
+            self.eat(TokenType.ELSE)
+
+            if self.current.type == TokenType.DO:
+                self.eat(TokenType.DO)
+                else_block = self.block()
+                return If(branches, else_block)
+
+            condition = self.expr()
+            self.eat(TokenType.DO)
+            block_node = self.block()
+            branches.append((condition, block_node))
+
+        return If(branches)
+
+    def statement(self):
+        if self.current.type == TokenType.IF:
+            return self.if_statement()
+
+        if self.current.type == TokenType.IDENTIFIER:
+            next_token = self.peek_token()
+            if next_token.type == TokenType.EQUAL:
+                return self.assignment()
+            return self.expr()
+
+        return self.expr()
+
     def assignment(self):
         name = self.current.value
         self.eat(TokenType.IDENTIFIER)
@@ -84,7 +158,25 @@ class Parser:
         value = self.expr()
         return Assignment(name, value)
 
+    def peek_token(self):
+        old_pos = self.lexer.pos
+        old_current = self.lexer.current
+
+        token = self.lexer.get_next_token()
+
+        self.lexer.pos = old_pos
+        self.lexer.current = old_current
+
+        return token
+
     def parse(self):
-        if self.current.type == TokenType.IDENTIFIER and self.lexer.peek() == "=":
-            return self.assignment()
-        return self.expr()
+        statements = []
+
+        while self.current.type != TokenType.EOF:
+            if self.current.type == TokenType.NEWLINE:
+                self.eat(TokenType.NEWLINE)
+                continue
+
+            statements.append(self.statement())
+
+        return Block(statements)

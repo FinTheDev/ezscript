@@ -50,3 +50,18 @@ class Call:
 
     def __repr__(self):
         return f"Call({self.name}, {self.argument})"
+
+class Block:
+    def __init__(self, statements):
+        self.statements = statements
+
+    def __repr__(self):
+        return f"Block({self.statements})"
+
+class If:
+    def __init__(self, branches, else_block=None):
+        self.branches = branches
+        self.else_block = else_block
+
+    def __repr__(self):
+        return f"If({self.branches}, else={self.else_block})"
