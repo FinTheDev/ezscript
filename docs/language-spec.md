@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-EZScript is a lightweight programming language designed for integration with NoobOS.
+EZScript is a lightweight interpreted programming language designed for integration with NoobOS.
 It emphasizes simplicity, readability, and tight system-level integration.
 
 Programs execute from top to bottom.
