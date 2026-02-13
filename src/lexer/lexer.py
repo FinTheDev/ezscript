@@ -13,6 +13,7 @@ class TokenType(Enum):
     EQUAL      = auto()
     IF         = auto()
     ELSE       = auto()
+    WHILE      = auto()
     DO         = auto()
     EQEQ       = auto()
     NEQ        = auto()
@@ -50,6 +51,7 @@ class Lexer:
             "false": TokenType.FALSE,
             "if": TokenType.IF,
             "else": TokenType.ELSE,
+            "while": TokenType.WHILE,
             "do": TokenType.DO,
         }
 
