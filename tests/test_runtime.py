@@ -12,6 +12,11 @@ else x < 10 do
     print("less than 10")
 else do
     print("x is not a number")
+
+y = 1
+while y <= 3 do
+    print(y)
+    y = y + 1
 """)
 parser = Parser(lexer)
 ast = parser.parse()

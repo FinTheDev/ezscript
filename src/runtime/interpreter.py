@@ -77,3 +77,8 @@ class Interpreter:
             return self.visit(node.else_block)
 
         return None
+
+    def visit_While(self, node):
+        while self.visit(node.condition):
+            self.visit(node.block)
+        return None
