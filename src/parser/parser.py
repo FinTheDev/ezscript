@@ -139,9 +139,19 @@ class Parser:
 
         return If(branches)
 
+    def while_statement(self):
+        self.eat(TokenType.WHILE)
+        condition = self.expr()
+        self.eat(TokenType.DO)
+        block_node = self.block()
+        return While(condition, block_node)
+
     def statement(self):
         if self.current.type == TokenType.IF:
             return self.if_statement()
+
+        if self.current.type == TokenType.WHILE:
+            return self.while_statement()
 
         if self.current.type == TokenType.IDENTIFIER:
             next_token = self.peek_token()

@@ -65,3 +65,11 @@ class If:
 
     def __repr__(self):
         return f"If({self.branches}, else={self.else_block})"
+
+class While:
+    def __init__(self, condition, block):
+        self.condition = condition
+        self.block = block
+
+    def __repr__(self):
+        return f"While({self.condition}, {self.block})"
