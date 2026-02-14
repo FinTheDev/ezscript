@@ -20,6 +20,7 @@ class TokenType(Enum):
     DO         = auto()
     DEFINE     = auto()
     AS         = auto()
+    COMMA      = auto()
     EQEQ       = auto()
     NEQ        = auto()
     LT         = auto()
@@ -161,6 +162,10 @@ class Lexer:
                 self.advance()
                 self.at_line_start = True
                 return Token(TokenType.NEWLINE, "\n")
+
+            if self.current == ",":
+                self.advance()
+                return Token(TokenType.COMMA, ",")
 
             if self.at_line_start:
                 self.at_line_start = False
