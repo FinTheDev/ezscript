@@ -20,6 +20,7 @@ class TokenType(Enum):
     DO         = auto()
     DEFINE     = auto()
     AS         = auto()
+    RETURN     = auto()
     COMMA      = auto()
     EQEQ       = auto()
     NEQ        = auto()
@@ -64,6 +65,7 @@ class Lexer:
             "do"    : TokenType.DO    ,
             "define": TokenType.DEFINE,
             "as"    : TokenType.AS    ,
+            "return": TokenType.RETURN,
         }
 
     def advance(self):

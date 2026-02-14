@@ -52,12 +52,12 @@ class Assignment:
         return f"Assignment({self.name}, {self.value})"
 
 class Call:
-    def __init__(self, name, argument):
-        self.name = name
-        self.argument = argument
+    def __init__(self, callee, arguments):
+        self.callee = callee
+        self.arguments = arguments
 
     def __repr__(self):
-        return f"Call({self.name}, {self.argument})"
+        return f"Call({self.callee}, {self.arguments})"
 
 class Block:
     def __init__(self, statements):
@@ -97,11 +97,3 @@ class Return:
 
     def __repr__(self):
         return f"Return({self.value})"
-
-class Call:
-    def __init__(self, callee, arguments):
-        self.callee = callee
-        self.arguments = arguments
-
-    def __repr__(self):
-        return f"Call({self.callee}, {self.arguments})"

@@ -26,10 +26,10 @@ Goal: Support structured program flow.
 
 ## Phase 3 – Functions
 
-- [ ] Function definitions
-- [ ] Function calls
-- [ ] Return values
-- [ ] Scope handling
+- [x] Function definitions
+- [x] Function calls
+- [x] Return values
+- [x] Scope handling
 
 Goal: Enable modular programming.
 

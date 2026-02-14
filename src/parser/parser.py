@@ -43,9 +43,19 @@ class Parser:
 
             if self.current.type == TokenType.LPAREN:
                 self.eat(TokenType.LPAREN)
-                argument = self.expr()
+
+                arguments = []
+
+                if self.current.type != TokenType.RPAREN:
+                    arguments.append(self.expr())
+
+                    while self.current.type == TokenType.COMMA:
+                        self.eat(TokenType.COMMA)
+                        arguments.append(self.expr())
+
                 self.eat(TokenType.RPAREN)
-                return Call(name, argument)
+
+                return Call(Identifier(name), arguments)
 
             return Identifier(name)
 
@@ -189,6 +199,11 @@ class Parser:
 
         return Function(name, params, body)
 
+    def return_statement(self):
+        self.eat(TokenType.RETURN)
+        value = self.expr()
+        return Return(value)
+
     def statement(self):
         if self.current.type == TokenType.IF:
             return self.if_statement()
@@ -198,6 +213,9 @@ class Parser:
 
         if self.current.type == TokenType.DEFINE:
             return self.function_def()
+
+        if self.current.type == TokenType.RETURN:
+            return self.return_statement()
 
         if self.current.type == TokenType.IDENTIFIER:
             next_token = self.peek_token()

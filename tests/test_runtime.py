@@ -24,6 +24,23 @@ if z > 2 and z < 10 do
 
 if not false do
     print("works")
+
+define greet(name) as
+    print(name)
+
+greet("FinThePin")
+
+define add(a, b) as
+    return a + b
+
+print(add(2, 3))
+
+define fact(n) as
+    if n == 0 do
+        return 1
+    return n * fact(n - 1)
+
+print(fact(5))
 """)
 parser = Parser(lexer)
 ast = parser.parse()
@@ -32,4 +49,3 @@ interpreter = Interpreter()
 result = interpreter.visit(ast)
 
 print("result:", result)
-print("env:", interpreter.env)

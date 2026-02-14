@@ -33,6 +33,18 @@ define greet(name) as
     print(name)
 
 greet("FinThePin")
+
+define add(a, b) as
+    return a + b
+
+print(add(2, 3))
+
+define fact(n) as
+    if n == 0 do
+        return 1
+    return n * fact(n - 1)
+
+print(fact(5))
 """
 
 lexer = Lexer(code)
