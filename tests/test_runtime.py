@@ -17,6 +17,13 @@ y = 1
 while y <= 3 do
     print(y)
     y = y + 1
+
+z = 5
+if z > 2 and z < 10 do
+    print("valid")
+
+if not false do
+    print("works")
 """)
 parser = Parser(lexer)
 ast = parser.parse()

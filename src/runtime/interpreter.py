@@ -47,6 +47,10 @@ class Interpreter:
             return left == right
         if node.op.type.name == "NEQ":
             return left != right
+        if node.op.type.name == "AND":
+            return left and right
+        if node.op.type.name == "OR":
+            return left or right
 
     def visit_Assignment(self, node):
         value = self.visit(node.value)
@@ -77,6 +81,14 @@ class Interpreter:
             return self.visit(node.else_block)
 
         return None
+
+    def visit_UnaryOp(self, node):
+        value = self.visit(node.expr)
+
+        if node.op.type.name == "NOT":
+            return not value
+
+        raise Exception("Unsupported unary operator")
 
     def visit_While(self, node):
         while self.visit(node.condition):
