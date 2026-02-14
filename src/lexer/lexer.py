@@ -6,6 +6,9 @@ class TokenType(Enum):
     STRING     = auto()
     TRUE       = auto()
     FALSE      = auto()
+    AND        = auto()
+    OR         = auto()
+    NOT        = auto()
     PLUS       = auto()
     MINUS      = auto()
     STAR       = auto()
@@ -49,6 +52,9 @@ class Lexer:
         self.KEYWORDS = {
             "true": TokenType.TRUE,
             "false": TokenType.FALSE,
+            "and": TokenType.AND,
+            "or": TokenType.OR,
+            "not": TokenType.NOT,
             "if": TokenType.IF,
             "else": TokenType.ELSE,
             "while": TokenType.WHILE,
