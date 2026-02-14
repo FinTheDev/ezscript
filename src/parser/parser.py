@@ -8,7 +8,9 @@ class Parser:
 
     def eat(self, token_type):
         if self.current.type == token_type:
+            token = self.current
             self.current = self.lexer.get_next_token()
+            return token
         else:
             raise Exception(f"Expected {token_type}, got {self.current.type}")
 
@@ -157,8 +159,35 @@ class Parser:
         self.eat(TokenType.WHILE)
         condition = self.expr()
         self.eat(TokenType.DO)
+
         block_node = self.block()
+
         return While(condition, block_node)
+
+    def function_def(self):
+        self.eat(TokenType.DEFINE)
+
+        name_token = self.eat(TokenType.IDENTIFIER)
+        name = name_token.value
+
+        self.eat(TokenType.LPAREN)
+
+        params = []
+        if self.current.type != TokenType.RPAREN:
+            param_token = self.eat(TokenType.IDENTIFIER)
+            params.append(param_token.value)
+
+            while self.current.type == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+                param_token = self.eat(TokenType.IDENTIFIER)
+                params.append(param_token.value)
+
+        self.eat(TokenType.RPAREN)
+        self.eat(TokenType.AS)
+
+        body = self.block()
+
+        return Function(name, params, body)
 
     def statement(self):
         if self.current.type == TokenType.IF:
@@ -166,6 +195,9 @@ class Parser:
 
         if self.current.type == TokenType.WHILE:
             return self.while_statement()
+
+        if self.current.type == TokenType.DEFINE:
+            return self.function_def()
 
         if self.current.type == TokenType.IDENTIFIER:
             next_token = self.peek_token()

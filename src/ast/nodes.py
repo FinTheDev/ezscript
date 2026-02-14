@@ -81,3 +81,27 @@ class While:
 
     def __repr__(self):
         return f"While({self.condition}, {self.block})"
+
+class Function:
+    def __init__(self, name, params, body):
+        self.name = name
+        self.params = params
+        self.body = body
+
+    def __repr__(self):
+        return f"Function({self.name}, {self.params}, {self.body})"
+
+class Return:
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f"Return({self.value})"
+
+class Call:
+    def __init__(self, callee, arguments):
+        self.callee = callee
+        self.arguments = arguments
+
+    def __repr__(self):
+        return f"Call({self.callee}, {self.arguments})"
