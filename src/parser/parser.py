@@ -31,6 +31,10 @@ class Parser:
             self.eat(TokenType.FALSE)
             return Bool(False)
 
+        if token.type == TokenType.NOT:
+            self.eat(TokenType.NOT)
+            return UnaryOp(token, self.factor())
+
         if token.type == TokenType.IDENTIFIER:
             name = token.value
             self.eat(TokenType.IDENTIFIER)
@@ -77,6 +81,16 @@ class Parser:
 
         return node
 
+    def boolean(self):
+        node = self.comparison()
+
+        while self.current.type in (TokenType.AND, TokenType.OR):
+            op = self.current
+            self.eat(op.type)
+            node = BinaryOp(node, op, self.comparison())
+
+        return node
+
     def comparison(self):
         node = self.arithmetic()
 
@@ -95,7 +109,7 @@ class Parser:
         return node
 
     def expr(self):
-        return self.comparison()
+        return self.boolean()
 
     def block(self):
         self.eat(TokenType.NEWLINE)

@@ -35,6 +35,14 @@ class BinaryOp:
     def __repr__(self):
         return f"BinaryOp({self.left}, {self.op.type.name}, {self.right})"
 
+class UnaryOp:
+    def __init__(self, op, expr):
+        self.op = op
+        self.expr = expr
+
+    def __repr__(self):
+        return f"UnaryOp({self.op.type.name}, {self.expr})"
+
 class Assignment:
     def __init__(self, name, value):
         self.name = name

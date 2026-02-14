@@ -12,10 +12,17 @@ else x < 10 do
 else do
     print("x is not a number")
 
-y = 0
-while y < 3 do
+y = 1
+while y <= 3 do
     print(y)
     y = y + 1
+
+z = 5
+if z > 2 and z < 10 do
+    print("valid")
+
+if not false do
+    print("works")
 """
 
 lexer = Lexer(code)
