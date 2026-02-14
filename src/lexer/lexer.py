@@ -18,6 +18,8 @@ class TokenType(Enum):
     ELSE       = auto()
     WHILE      = auto()
     DO         = auto()
+    DEFINE     = auto()
+    AS         = auto()
     EQEQ       = auto()
     NEQ        = auto()
     LT         = auto()
@@ -50,15 +52,17 @@ class Lexer:
         self.pending_dedents = 0
 
         self.KEYWORDS = {
-            "true": TokenType.TRUE,
-            "false": TokenType.FALSE,
-            "and": TokenType.AND,
-            "or": TokenType.OR,
-            "not": TokenType.NOT,
-            "if": TokenType.IF,
-            "else": TokenType.ELSE,
-            "while": TokenType.WHILE,
-            "do": TokenType.DO,
+            "true"  : TokenType.TRUE  ,
+            "false" : TokenType.FALSE ,
+            "and"   : TokenType.AND   ,
+            "or"    : TokenType.OR    ,
+            "not"   : TokenType.NOT   ,
+            "if"    : TokenType.IF    ,
+            "else"  : TokenType.ELSE  ,
+            "while" : TokenType.WHILE ,
+            "do"    : TokenType.DO    ,
+            "define": TokenType.DEFINE,
+            "as"    : TokenType.AS    ,
         }
 
     def advance(self):

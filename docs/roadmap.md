@@ -20,7 +20,7 @@ Goal: Execute simple scripts with variables and arithmetic.
 
 - [x] Add if and else
 - [x] Add while loops
-- [ ] Add boolean logic support
+- [x] Add boolean logic support
 
 Goal: Support structured program flow.
 

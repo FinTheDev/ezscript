@@ -28,6 +28,11 @@ if z > 2 and z < 10 do
 
 if not false do
     print("works")
+
+define greet(name) as
+    print(name)
+
+greet("FinThePin")
 """
 
 lexer = Lexer(code)
