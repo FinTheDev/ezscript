@@ -18,18 +18,18 @@ Goal: Execute simple scripts with variables and arithmetic.
 
 ## Phase 2 – Control Flow
 
-- [ ] Add if and else
-- [ ] Add while loops
-- [ ] Add boolean logic support
+- [x] Add if and else
+- [x] Add while loops
+- [x] Add boolean logic support
 
 Goal: Support structured program flow.
 
 ## Phase 3 – Functions
 
-- [ ] Function definitions
-- [ ] Function calls
-- [ ] Return values
-- [ ] Scope handling
+- [x] Function definitions
+- [x] Function calls
+- [x] Return values
+- [x] Scope handling
 
 Goal: Enable modular programming.
 

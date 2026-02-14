@@ -8,7 +8,9 @@ class Parser:
 
     def eat(self, token_type):
         if self.current.type == token_type:
+            token = self.current
             self.current = self.lexer.get_next_token()
+            return token
         else:
             raise Exception(f"Expected {token_type}, got {self.current.type}")
 
@@ -31,15 +33,29 @@ class Parser:
             self.eat(TokenType.FALSE)
             return Bool(False)
 
+        if token.type == TokenType.NOT:
+            self.eat(TokenType.NOT)
+            return UnaryOp(token, self.factor())
+
         if token.type == TokenType.IDENTIFIER:
             name = token.value
             self.eat(TokenType.IDENTIFIER)
 
             if self.current.type == TokenType.LPAREN:
                 self.eat(TokenType.LPAREN)
-                argument = self.expr()
+
+                arguments = []
+
+                if self.current.type != TokenType.RPAREN:
+                    arguments.append(self.expr())
+
+                    while self.current.type == TokenType.COMMA:
+                        self.eat(TokenType.COMMA)
+                        arguments.append(self.expr())
+
                 self.eat(TokenType.RPAREN)
-                return Call(name, argument)
+
+                return Call(Identifier(name), arguments)
 
             return Identifier(name)
 
@@ -64,7 +80,7 @@ class Parser:
 
         return node
 
-    def expr(self):
+    def arithmetic(self):
         node = self.term()
 
         while self.current.type in (TokenType.PLUS, TokenType.MINUS):
@@ -77,6 +93,138 @@ class Parser:
 
         return node
 
+    def boolean(self):
+        node = self.comparison()
+
+        while self.current.type in (TokenType.AND, TokenType.OR):
+            op = self.current
+            self.eat(op.type)
+            node = BinaryOp(node, op, self.comparison())
+
+        return node
+
+    def comparison(self):
+        node = self.arithmetic()
+
+        while self.current.type in (
+            TokenType.EQEQ,
+            TokenType.NEQ,
+            TokenType.LT,
+            TokenType.GT,
+            TokenType.LTE,
+            TokenType.GTE,
+        ):
+            op = self.current
+            self.eat(op.type)
+            node = BinaryOp(node, op, self.arithmetic())
+
+        return node
+
+    def expr(self):
+        return self.boolean()
+
+    def block(self):
+        self.eat(TokenType.NEWLINE)
+        self.eat(TokenType.INDENT)
+
+        statements = []
+
+        while self.current.type != TokenType.DEDENT:
+            if self.current.type == TokenType.NEWLINE:
+                self.eat(TokenType.NEWLINE)
+                continue
+
+            statements.append(self.statement())
+
+        self.eat(TokenType.DEDENT)
+
+        return Block(statements)
+
+    def if_statement(self):
+        branches = []
+
+        self.eat(TokenType.IF)
+        condition = self.expr()
+        self.eat(TokenType.DO)
+
+        block_node = self.block()
+        branches.append((condition, block_node))
+
+        while self.current.type == TokenType.ELSE:
+            self.eat(TokenType.ELSE)
+
+            if self.current.type == TokenType.DO:
+                self.eat(TokenType.DO)
+                else_block = self.block()
+                return If(branches, else_block)
+
+            condition = self.expr()
+            self.eat(TokenType.DO)
+            block_node = self.block()
+            branches.append((condition, block_node))
+
+        return If(branches)
+
+    def while_statement(self):
+        self.eat(TokenType.WHILE)
+        condition = self.expr()
+        self.eat(TokenType.DO)
+
+        block_node = self.block()
+
+        return While(condition, block_node)
+
+    def function_def(self):
+        self.eat(TokenType.DEFINE)
+
+        name_token = self.eat(TokenType.IDENTIFIER)
+        name = name_token.value
+
+        self.eat(TokenType.LPAREN)
+
+        params = []
+        if self.current.type != TokenType.RPAREN:
+            param_token = self.eat(TokenType.IDENTIFIER)
+            params.append(param_token.value)
+
+            while self.current.type == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+                param_token = self.eat(TokenType.IDENTIFIER)
+                params.append(param_token.value)
+
+        self.eat(TokenType.RPAREN)
+        self.eat(TokenType.AS)
+
+        body = self.block()
+
+        return Function(name, params, body)
+
+    def return_statement(self):
+        self.eat(TokenType.RETURN)
+        value = self.expr()
+        return Return(value)
+
+    def statement(self):
+        if self.current.type == TokenType.IF:
+            return self.if_statement()
+
+        if self.current.type == TokenType.WHILE:
+            return self.while_statement()
+
+        if self.current.type == TokenType.DEFINE:
+            return self.function_def()
+
+        if self.current.type == TokenType.RETURN:
+            return self.return_statement()
+
+        if self.current.type == TokenType.IDENTIFIER:
+            next_token = self.peek_token()
+            if next_token.type == TokenType.EQUAL:
+                return self.assignment()
+            return self.expr()
+
+        return self.expr()
+
     def assignment(self):
         name = self.current.value
         self.eat(TokenType.IDENTIFIER)
@@ -84,7 +232,25 @@ class Parser:
         value = self.expr()
         return Assignment(name, value)
 
+    def peek_token(self):
+        old_pos = self.lexer.pos
+        old_current = self.lexer.current
+
+        token = self.lexer.get_next_token()
+
+        self.lexer.pos = old_pos
+        self.lexer.current = old_current
+
+        return token
+
     def parse(self):
-        if self.current.type == TokenType.IDENTIFIER and self.lexer.peek() == "=":
-            return self.assignment()
-        return self.expr()
+        statements = []
+
+        while self.current.type != TokenType.EOF:
+            if self.current.type == TokenType.NEWLINE:
+                self.eat(TokenType.NEWLINE)
+                continue
+
+            statements.append(self.statement())
+
+        return Block(statements)
